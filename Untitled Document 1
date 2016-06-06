@@ -1,0 +1,26 @@
+ephys computer
+connect animals
+led driver
+
+analysis session
+
+loading
+filtering
+peak detection
+cutting spikes
+censoring
+waveform cell type identification
+features
+cluster
+quality control
+(tagging)
+
+Mclust
+rasterplot
+PSTH
+
+
+
+
+
+
