@@ -41,7 +41,7 @@ plot(filtered_unit(1,1:10000),'r')
 
 %% Detect peaks
 threshold = 60;
-for chnum = 1:4
+for chnum = 1:4squeeze
     pk{chnum} = peakdetect(-filtered_unit(chnum,:),threshold);
 end
 
