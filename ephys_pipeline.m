@@ -7,20 +7,23 @@ clc
 %% Load data
 DATAPATH = '/example_data/';
 
+% load raw signals
 [data1, timestamps, info] = load_open_ephys_data([DATAPATH '100_CH13.continuous']);
 [data2, timestamps, info] = load_open_ephys_data([DATAPATH '100_CH14.continuous']);
 [data3, timestamps, info] = load_open_ephys_data([DATAPATH '100_CH15.continuous']);
 [data4, timestamps, info] = load_open_ephys_data([DATAPATH '100_CH16.continuous']);
 
-
-[BehavioralEvents, OpenEphysTimestamps] = OpenEphysEvents2Bpod([DATAPATH '/all_channels.events']);
-
-%[events, timestamps, info] = load_open_ephys_data([DATAPATH 'all_channels.events']);
-
 data = [data1 data2 data3 data4];
 
+% load event file
+[BehavioralEvents, OpenEphysTimestamps] = OpenEphysEvents2Bpod([DATAPATH '/all_channels.events']);
+
+% get stimulus onset (if connecting pulse pal directly to open ephys)
+StimOnset = OpenEphysTimestamps(diff(OpenEphysTimestamps)>2);
+
+%%
 figure
-plot(data(1000:5000,1))
+plot(data(1:10000,1))
 hold on
 
 %% Filter your data
@@ -34,17 +37,21 @@ for chnum = 1:4
     filtered_unit(chnum,:) = filter(b,a,cdata);  % filter
 end
 
-%%
-plot(filtered_unit(1,1000:5000),'r')
+plot(filtered_unit(1,1:10000),'r')
 
 %% Detect peaks
-
+threshold = 60;
 for chnum = 1:4
-    pk{chnum} = peakdetect(-filtered_unit(chnum,:),60);
+    pk{chnum} = peakdetect(-filtered_unit(chnum,:),threshold);
 end
 
 hold on
-plot(pk{chnum},1,'o')
+plot(1:10000,-threshold*ones(10000),'k')
+c=colormap(jet(10));
+for chnum = 1:1
+    plot(repmat(pk{1,chnum}(1,1:15)',1,2),[-400 400],'Color',c(chnum,:))
+end
+
 
 %% Censoring
 
